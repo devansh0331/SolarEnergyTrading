@@ -3,6 +3,7 @@ import React, { useContext, useEffect, useState } from "react";
 import { Context } from "../Context";
 import { ethers } from "ethers";
 import { FaEthereum } from "react-icons/fa";
+import { ThreeDots } from "react-loader-spinner";
 
 function Pay() {
   const { account, contractAddress, contract } = useContext(Context);
@@ -10,6 +11,7 @@ function Pay() {
   const [errorMssg, setErrorMssg] = useState("");
   const [component, setComponent] = useState("Transfer");
   const [balance, setBalance] = useState();
+  const [balanceLoading, setBalanceLoading] = useState(false);
 
   const sendEth = async () => {
     let transaction;
@@ -29,16 +31,20 @@ function Pay() {
       const provider = new ethers.providers.Web3Provider(ethereum); //read the Blockchain
       const signer = provider.getSigner(); //write the blockchain
       transaction = await contract.connect(signer).getBalance();
-
+      setBalanceLoading(false);
       setBalance(ethers.utils.formatEther(transaction));
       console.log("Balance, " + balance);
     } catch (error) {
+      setBalanceLoading(false);
       setBalance(0);
       console.log("Balance, " + balance);
     }
   };
   useEffect(() => {
-    if (component == "Check_Balance") checkBalance();
+    if (component == "Check_Balance") {
+      setBalanceLoading(true);
+      checkBalance();
+    }
   }, [component]);
   return (
     <div>
@@ -145,10 +151,25 @@ function Pay() {
                 <p className="text-base">Overview</p>
                 <p className="text-xs text-gray-600 mt-3">ETH BALANCE</p>
                 <p className="flex items-center mt-1">
-                  <span>
-                    <FaEthereum />
-                  </span>
-                  <span>{balance > 0 ? balance : 0} ETH</span>
+                  {balanceLoading ? (
+                    <ThreeDots
+                      visible={true}
+                      height="30"
+                      width="30"
+                      color=""
+                      radius="10"
+                      ariaLabel="three-dots-loading"
+                      wrapperStyle={{}}
+                      wrapperClass=""
+                    />
+                  ) : (
+                    <>
+                      <span>
+                        <FaEthereum />
+                      </span>
+                      <span>{balance > 0 ? balance : 0} ETH</span>
+                    </>
+                  )}
                 </p>
                 <p></p>
               </div>

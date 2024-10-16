@@ -1,5 +1,6 @@
 import { Card, Typography } from "@material-tailwind/react";
 import { useEffect, useState } from "react";
+import { Grid } from "react-loader-spinner";
 
 const TABLE_HEAD = [
   "Data/Time",
@@ -12,51 +13,24 @@ const TABLE_HEAD = [
   "Power Factor (PF)",
 ];
 
-const TABLE_ROWS = [
-  {
-    name: "John Michael",
-    job: "Manager",
-    date: "23/04/18",
-  },
-  {
-    name: "Alexa Liras",
-    job: "Developer",
-    date: "23/04/18",
-  },
-  {
-    name: "Laurent Perrier",
-    job: "Executive",
-    date: "19/09/17",
-  },
-  {
-    name: "Michael Levi",
-    job: "Developer",
-    date: "24/12/08",
-  },
-  {
-    name: "Richard Gran",
-    job: "Manager",
-    date: "04/10/21",
-  },
-];
-
 export function EnergyRecords() {
   const [data, setData] = useState([]);
+  const [loading, setLoading] = useState(false);
   const URL =
-    "https://script.google.com/macros/s/AKfycbzdg8ovfUBtjZiEvv5tY8rrAw12svJNU7tzGy06v2pC0WM3MzQxfP2XHuZ_qls8T3m9dg/exec?type=1";
-  const URL2 =
     "https://script.google.com/macros/s/AKfycbyviZN9K4sXRkDdrPIXXERh2KHcLN51VH5CgZFL145UdAqWw1cqhW9_pM3_GLQqcBXRaA/exec";
 
-  const TEST_READING_URL =
-    "https://script.google.com/macros/s/AKfycbwUBirAJYgZ_-fOGHecf_8jUe051hrmUZOrwl0zZFCkwqyoAjCD1PxkU69WIqXfqWXe/exec";
-  const fetchData = async () =>
-    await fetch(URL2)
+  const fetchData = async () => {
+    setLoading(true);
+    await fetch(URL)
       .then((response) => response.json())
       .then((resData) => {
+        setLoading(false);
         setData(resData);
+
         console.log(resData);
       })
       .catch((error) => console.log("Error:", error));
+  };
 
   useEffect(() => {
     fetchData();
@@ -92,7 +66,20 @@ export function EnergyRecords() {
               ))}
             </tr>
           </thead>
-          <tbody>
+          <tbody className="w-full relative">
+            {loading && (
+              <tr className="absolute left-1/2 top-36">
+                <Grid
+                  visible={true}
+                  height="60"
+                  width="60"
+                  color="#0C6CF2"
+                  ariaLabel="grid-loading"
+                  radius="9.5"
+                  wrapperClass="grid-wrapper"
+                />
+              </tr>
+            )}
             {data.map(
               (
                 {

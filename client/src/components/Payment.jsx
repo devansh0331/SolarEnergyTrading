@@ -1,14 +1,19 @@
 import React, { useContext, useEffect, useState } from "react";
-import { FaEthereum } from "react-icons/fa";
+import { FaBatteryThreeQuarters, FaEthereum } from "react-icons/fa";
 import { Context } from "../Context";
 import { Button } from "@material-tailwind/react";
 import { ethers } from "ethers";
+import { AiFillThunderbolt } from "react-icons/ai";
+import { ThreeDots } from "react-loader-spinner";
 
 function Payment() {
   const { account, contractAddress, contract } = useContext(Context);
   const [data, setData] = useState([]);
   const [power, setPower] = useState(0);
   const [balance, setBalance] = useState();
+  const [balanceLoading, setBalanceLoading] = useState(false);
+  const [powerLoading, setPowerLoading] = useState(false);
+  const [netPayamentLoading, setNetPaymentLoading] = useState(false);
   const URL =
     "https://script.google.com/macros/s/AKfycbyviZN9K4sXRkDdrPIXXERh2KHcLN51VH5CgZFL145UdAqWw1cqhW9_pM3_GLQqcBXRaA/exec";
 
@@ -19,17 +24,21 @@ function Payment() {
         let i = 1;
         while (power == 0) {
           if (resData[resData.length - i].power != "") {
+            setPowerLoading(false);
             setPower(resData[resData.length - i].power);
             break;
           }
           i++;
         }
       })
-      .catch((error) => console.log("Error:", error));
+      .catch((error) => {
+        setPowerLoading(false);
+        console.log("Error:", error);
+      });
   useEffect(() => {
+    setPowerLoading(true);
     fetchData();
     checkBalance();
-    console.log("Power");
   }, [power]);
   const checkBalance = async () => {
     try {
@@ -68,15 +77,34 @@ function Payment() {
               <p className="text-base">Current Power Consumption</p>
               <p className="text-xs text-gray-600 mt-3">POWER (kWh)</p>
               <p className="flex items-center mt-1">
-                <span>{/* <FaEthereum /> */}</span>
-                <span>{power > 0 ? power : "0"} kWh</span>
+                {powerLoading ? (
+                  <ThreeDots
+                    visible={true}
+                    height="30"
+                    width="30"
+                    color=""
+                    radius="10"
+                    ariaLabel="three-dots-loading"
+                    wrapperStyle={{}}
+                    wrapperClass=""
+                  />
+                ) : (
+                  <>
+                    <span>
+                      <AiFillThunderbolt />
+                    </span>
+                    <span>{power > 0 ? power : "0"} kWh</span>
+                  </>
+                )}
               </p>
             </div>
             <div className="p-4 bg-white rounded-xl shadow-md shadow-gray-300">
               <p className="text-base">Conversion Rate</p>
               <p className="text-xs text-gray-600 mt-3">RATE (ETH / UNIT)</p>
               <p className="flex items-center mt-1">
-                <span>{/* <FaEthereum /> */}</span>
+                <span>
+                  <FaEthereum />{" "}
+                </span>
                 <span> 0.2 Eth / Unit</span>
               </p>
             </div>
@@ -84,8 +112,25 @@ function Payment() {
               <p className="text-base">NET Payment</p>
               <p className="text-xs text-gray-600 mt-3">ETHEREUM</p>
               <p className="flex items-center mt-1">
-                <span>{/* <FaEthereum /> */}</span>
-                <span>{(power * 0.2).toPrecision(2)} ETH</span>
+                {powerLoading ? (
+                  <ThreeDots
+                    visible={true}
+                    height="30"
+                    width="30"
+                    color=""
+                    radius="10"
+                    ariaLabel="three-dots-loading"
+                    wrapperStyle={{}}
+                    wrapperClass=""
+                  />
+                ) : (
+                  <>
+                    <span>
+                      <FaEthereum />
+                    </span>
+                    <span>{(power * 0.2).toPrecision(2)} ETH</span>
+                  </>
+                )}
               </p>
             </div>
           </div>
@@ -96,15 +141,15 @@ function Payment() {
                 <div className="w-full flex justify-between">
                   <p className=" ">From (address)</p>
                   <p className="text-gray-600">
-                    {/* {account.slice(account.length - 10, account.length - 1)} */}
-                    {account.toString().slice(0, 5)} XXXXXXX
+                    {account.toString().slice(0, 5)}XXXXX
                   </p>
                 </div>
                 <div className="w-full flex justify-between">
                   <p className=" ">To (address)</p>
                   <p className="text-gray-600">
                     {/* {account.slice(account.length - 10, account.length - 1)} */}
-                    {contractAddress.toString().slice(0, 5)} XXXXXXX
+                    {contractAddress.toString().slice(0, 5).toLowerCase()}
+                    XXXXX
                   </p>
                 </div>
 
@@ -119,7 +164,22 @@ function Payment() {
                   <p className=" ">Consumption (kWh)</p>
                   <p className="text-gray-600">
                     {/* {account.slice(account.length - 10, account.length - 1)} */}
-                    {power}
+                    {powerLoading ? (
+                      <ThreeDots
+                        visible={true}
+                        height="30"
+                        width="30"
+                        color=""
+                        radius="10"
+                        ariaLabel="three-dots-loading"
+                        wrapperStyle={{}}
+                        wrapperClass=""
+                      />
+                    ) : (
+                      <>
+                        <span>{power > 0 ? power : "0"} kWh</span>
+                      </>
+                    )}
                   </p>
                 </div>
                 <div className="w-full flex justify-between">
@@ -133,14 +193,35 @@ function Payment() {
                   <p className=" ">NET Cost (ETH)</p>
                   <p className="text-xl font-semibold">
                     {/* {account.slice(account.length - 10, account.length - 1)} */}
-                    {power * 0.2 > balance
-                      ? balance
-                      : (power * 0.2).toPrecision(2)}{" "}
-                    Ethereum
+                    {powerLoading ? (
+                      <ThreeDots
+                        visible={true}
+                        height="50"
+                        width="50"
+                        color=""
+                        radius="12"
+                        ariaLabel="three-dots-loading"
+                        wrapperStyle={{}}
+                        wrapperClass=""
+                      />
+                    ) : (
+                      <>
+                        {power * 0.2 > balance
+                          ? balance
+                          : (power * 0.2).toPrecision(2)}{" "}
+                        Ethereum
+                      </>
+                    )}
                   </p>
                 </div>
                 <div className="mx-auto">
-                  <Button className="bg-text" onClick={handlePayment}>
+                  <Button
+                    className={`bg-text ${
+                      !powerLoading ? "cursor-not-allowed" : "cursor-pointer"
+                    }`}
+                    disabled={powerLoading}
+                    onClick={handlePayment}
+                  >
                     Proceed Payment
                   </Button>
                 </div>

@@ -1,10 +1,11 @@
 import React, { useContext, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { Context } from "../Context";
+import { Button } from "@material-tailwind/react";
 
 function Navbar() {
   const { account } = useContext(Context);
-
+  console.log("Navbar : ", account);
   return (
     <div className="p-4 px-8 bg-off flex items-center justify-between">
       <p className="text-center text-3xl font-semibold text-text">
@@ -27,18 +28,10 @@ function Navbar() {
           <p>Money Transfer</p>
         </Link>
 
-        {account.length > 0 ? (
-          <a href="" className="pl-6">
-            <p className="bg-green-500 text-white font-semibold p-2 shadow-md">
-              Connected
-            </p>
-          </a>
+        {account != "Not connected" ? (
+          <Button className="bg-green-500">Connected</Button>
         ) : (
-          <a href="" className="px-6">
-            <p className="bg-text text-white font-semibold p-2 shadow-md">
-              Connect
-            </p>
-          </a>
+          <Button className="bg-text">Connect</Button>
         )}
       </div>
     </div>
