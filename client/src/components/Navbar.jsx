@@ -5,18 +5,18 @@ import { Button } from "@material-tailwind/react";
 
 function Navbar() {
   const { account } = useContext(Context);
-  console.log("Navbar : ", account);
   return (
-    <div className="p-4 px-8 bg-off flex items-center justify-between">
-      <p className="text-center text-3xl font-semibold text-text">
-        Solar_Energy_Trading x IIT Bhilai
-      </p>
+    <div className="p-4 px-8  bg-white mb-3  shadow-md shadow-gray-300 flex items-center justify-between">
+      <p className="text-center text-3xl font-semibold text-text">SETS</p>
       <div className="flex justify-end items-center text-base ">
         <Link to="/about" className="mx-6 text-gray-900 hover:text-text">
           <p>About</p>
         </Link>
+        <Link to="/meters" className="mx-6 text-gray-900 hover:text-text">
+          <p>Meters</p>
+        </Link>
         <Link to="/pay" className="mx-6 text-gray-900 hover:text-text">
-          <p>Pay</p>
+          <p>Deposit</p>
         </Link>
         <Link
           to="/energyRecords"
@@ -25,13 +25,13 @@ function Navbar() {
           <p>Energy Records</p>
         </Link>
         <Link to="/payment" className="mx-6 text-gray-900 hover:text-text">
-          <p>Money Transfer</p>
+          <p>Payment & Billing</p>
         </Link>
 
         {account != "Not connected" ? (
-          <Button className="bg-green-500">Connected</Button>
+          <Button className="bg-green-500 cursor-default">Connected</Button>
         ) : (
-          <Button className="bg-text">Connect</Button>
+          <Button className="bg-text cursor-default">Connect</Button>
         )}
       </div>
     </div>

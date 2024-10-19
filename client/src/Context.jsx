@@ -8,7 +8,8 @@ export const Context = createContext({});
 export function ContextProvider({ children }) {
   const [account, setAccount] = useState("Not connected");
   //   const contractAddress = "0xeEADc15dAdf55B3bC59F35881ca3676B74c33555";
-  const contractAddress = "0xE601738B1Fb61Ab35a61088C26565A3c1a5393D4";
+  // const contractAddress = "0xE601738B1Fb61Ab35a61088C26565A3c1a5393D4";
+  const contractAddress = "0x3Cef76601E25F340103D2b005F9871E92269C931";
   const contractABI = solarABI.abi;
   const [contract, setContract] = useState();
 

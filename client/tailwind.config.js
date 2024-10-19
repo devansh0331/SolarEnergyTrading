@@ -8,6 +8,9 @@ module.exports = withMT({
       colors: {
         off: "#F5FAFE",
         text: "#0C6CF2",
+        darkText: "#262262",
+        dark: "#1A2B6B",
+        darkOff: "#DFE7FB",
       },
     },
   },

@@ -16,8 +16,10 @@ const TABLE_HEAD = [
 export function EnergyRecords() {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(false);
+  // const URL =
+  //   "https://script.google.com/macros/s/AKfycbyviZN9K4sXRkDdrPIXXERh2KHcLN51VH5CgZFL145UdAqWw1cqhW9_pM3_GLQqcBXRaA/exec";
   const URL =
-    "https://script.google.com/macros/s/AKfycbyviZN9K4sXRkDdrPIXXERh2KHcLN51VH5CgZFL145UdAqWw1cqhW9_pM3_GLQqcBXRaA/exec";
+    "https://script.google.com/macros/s/AKfycbxr3gjKO-DS3KoyTGuMiHx0atUzfioSbWE44y21pOy2oIzFZ998IUYq76f3tLQCE7M7/exec";
 
   const fetchData = async () => {
     setLoading(true);
@@ -37,16 +39,14 @@ export function EnergyRecords() {
   }, []);
 
   return (
-    <div className="w-full overflow-y-hidden-hidden h-screen bg-off ">
+    <div className="w-full overflow-y-hidden-hidden h-screen  p-8">
       <div className="pt-3 pb-6">
-        <p className="text-xl text-text text-center font-semibold">
-          Energy Transfer Records
-        </p>
-        <p className="text-sm text-center ">
+        <p className="text-5xl ">Energy Transfer Records</p>
+        <p className="text-xl  ">
           Below are the Real-time records of your Energy Consumption{" "}
         </p>
       </div>
-      <Card className="h-full w-11/12 mx-auto shadow-md shadow-gray-300 overflow-scroll">
+      <Card className="h-full mx-auto shadow-md shadow-gray-300 overflow-scroll">
         <table className="w-full min-w-max table-auto text-left">
           <thead>
             <tr>
