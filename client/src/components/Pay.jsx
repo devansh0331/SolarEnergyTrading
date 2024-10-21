@@ -15,25 +15,31 @@ function Pay() {
   const [transactionMssg, setTransactionMssg] = useState("");
 
   const sendEth = async () => {
-    if (amount == 0) setTransactionMssg("Invalid Amount");
-    try {
-      setTransactionMssg("wait");
-      let transaction;
-      const { ethereum } = window;
-      const provider = new ethers.providers.Web3Provider(ethereum); //read the Blockchain
-      const signer = provider.getSigner(); //write the blockchain
-      transaction = await contract
-        .connect(signer)
-        .preDeposit({ value: ethers.utils.parseEther(amount.toString()) });
-      await transaction.wait(1);
-
-      setTransactionMssg("success");
+    if (amount <= 0) {
+      setTransactionMssg("Invalid Amount");
       setInterval(() => {
         setTransactionMssg("");
       }, 5000);
-    } catch (error) {
-      setTransactionMssg("Transaction Failed");
-      console.error(error);
+    } else {
+      try {
+        setTransactionMssg("wait");
+        let transaction;
+        const { ethereum } = window;
+        const provider = new ethers.providers.Web3Provider(ethereum); //read the Blockchain
+        const signer = provider.getSigner(); //write the blockchain
+        transaction = await contract
+          .connect(signer)
+          .preDeposit({ value: ethers.utils.parseEther(amount.toString()) });
+        await transaction.wait(1);
+
+        setTransactionMssg("success");
+        setInterval(() => {
+          setTransactionMssg("");
+        }, 5000);
+      } catch (error) {
+        setTransactionMssg("Transaction Failed");
+        console.error(error);
+      }
     }
   };
 
@@ -63,13 +69,13 @@ function Pay() {
     <div className="bg-off h-screen">
       <div className="w-3/4 mx-auto">
         <div className=" pt-3 pb-6">
-          <p className="text-5xl ">Meters</p>
+          <p className="text-5xl ">Deposit</p>
           <p className="text-xl  ">
-            Below are the Meters linked with your metamask account{" "}
+            Deposit ETH with your connected metamask account{" "}
           </p>
         </div>
 
-        <div className="flex">
+        <div className="flex mb-4">
           <p
             className={`mr-2 bg-white p-2 rounded-md shadow-gray-800 cursor-pointer ${
               component == "Transfer" ? "shadow-inner" : "shadow-sm"
@@ -142,11 +148,15 @@ function Pay() {
                     </p>
                   )}
                   {transactionMssg == "Invalid Amount" && (
-                    <p className="mr-4 text-green-500 font-semibold text-right">
-                      Transaction Successfull...
+                    <p className="mr-4 text-red-500 font-semibold text-right">
+                      Invalid Amount for Transaction
                       <br />{" "}
                       <span className="text-sm">
-                        (wait for a few second)
+                        (please enter amount greater then 0)
+                      </span>{" "}
+                      <br />{" "}
+                      <span className="text-sm italic">
+                        Try again in a few second
                       </span>{" "}
                       {/* &nbsp;&nbsp;&nbsp; */}
                     </p>

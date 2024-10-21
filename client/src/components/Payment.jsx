@@ -5,8 +5,11 @@ import { Button } from "@material-tailwind/react";
 import { ethers } from "ethers";
 import { AiFillThunderbolt } from "react-icons/ai";
 import { ThreeDots } from "react-loader-spinner";
+import { PaymentDialog } from "./PaymentDialog";
+import { useNavigate } from "react-router-dom";
 
 function Payment() {
+  const navigate = useNavigate();
   const { account, contractAddress, contract } = useContext(Context);
   const [data, setData] = useState([]);
   const [energy, setenergy] = useState(0);
@@ -14,6 +17,8 @@ function Payment() {
   const [balanceLoading, setBalanceLoading] = useState(false);
   const [energyLoading, setEnergyLoading] = useState(false);
   const [netPayamentLoading, setNetPaymentLoading] = useState(false);
+  const [paymentTransactionMssg, setPaymentTransactionMssg] = useState("");
+  const [open, setOpen] = useState(false);
   // const URL =
   //   "https://script.google.com/macros/s/AKfycbyviZN9K4sXRkDdrPIXXERh2KHcLN51VH5CgZFL145UdAqWw1cqhW9_pM3_GLQqcBXRaA/exec";
   const URL =
@@ -27,6 +32,8 @@ function Payment() {
         while (energy == 0) {
           if (resData[resData.length - i].energy != "") {
             setEnergyLoading(false);
+
+            setPaymentTransactionMssg("");
             setenergy(resData[resData.length - i].energy);
             break;
           }
@@ -35,10 +42,12 @@ function Payment() {
       })
       .catch((error) => {
         setEnergyLoading(false);
+
         console.log("Error:", error);
       });
   useEffect(() => {
     setEnergyLoading(true);
+    setPaymentTransactionMssg("calculating");
     fetchData();
     checkBalance();
   }, [energy]);
@@ -57,32 +66,44 @@ function Payment() {
       console.log("Balance, " + balance);
     }
   };
-
   const handlePayment = async () => {
-    let transaction;
-    const { ethereum } = window;
-    console.log("Energy: " + energy);
-    console.log("Energy: " + energy);
-    const netAmount = (energy * 0.2).toFixed(6);
-    if (netAmount > balance) {
-      const provider = new ethers.providers.Web3Provider(ethereum); //read the Blockchain
-      const signer = provider.getSigner(); //write the blockchain
-      transaction = await contract
-        .connect(signer)
-        .energyTrade(ethers.utils.parseEther(balance.toString()), 1);
-      await transaction.wait(1);
-      checkBalance();
-      alert("Payment Successfull");
-    } else {
-      const provider = new ethers.providers.Web3Provider(ethereum); //read the Blockchain
-      const signer = provider.getSigner(); //write the blockchain
+    setPaymentTransactionMssg("wait");
+    try {
+      let transaction;
+      const { ethereum } = window;
+      const netAmount = (energy * 0.2).toFixed(6);
+      if (netAmount > balance) {
+        const provider = new ethers.providers.Web3Provider(ethereum); //read the Blockchain
+        const signer = provider.getSigner(); //write the blockchain
+        transaction = await contract
+          .connect(signer)
+          .energyTrade(ethers.utils.parseEther(balance.toString()), 1);
+        await transaction.wait(1);
+        checkBalance();
+        setPaymentTransactionMssg("success");
+        setInterval(() => {
+          setPaymentTransactionMssg("");
+        }, 5000);
+      } else {
+        const provider = new ethers.providers.Web3Provider(ethereum); //read the Blockchain
+        const signer = provider.getSigner(); //write the blockchain
 
-      transaction = await contract
-        .connect(signer)
-        .energyTrade(ethers.utils.parseEther(netAmount.toString()), 0);
-      await transaction.wait(1);
-      checkBalance();
-      alert("Payment Successfull");
+        transaction = await contract
+          .connect(signer)
+          .energyTrade(ethers.utils.parseEther(netAmount.toString()), 0);
+        await transaction.wait(1);
+        checkBalance();
+        setPaymentTransactionMssg("success");
+        setInterval(() => {
+          setPaymentTransactionMssg("");
+        }, 5000);
+        // alert("Payment Successfull");
+      }
+    } catch (error) {
+      setPaymentTransactionMssg("error");
+      setInterval(() => {
+        setPaymentTransactionMssg("");
+      }, 5000);
     }
   };
 
@@ -209,7 +230,7 @@ function Payment() {
                   </p>
                 </div>
                 <div className="w-full flex justify-between">
-                  <p className=" ">NET Cost (ETH)</p>
+                  <p className=" ">NET Payable Amount (ETH)</p>
                   <p className="text-xl font-semibold">
                     {/* {account.slice(account.length - 10, account.length - 1)} */}
                     {energyLoading ? (
@@ -233,12 +254,62 @@ function Payment() {
                     )}
                   </p>
                 </div>
-                <div className="mx-auto">
+                <p className="text-red-700">
+                  {/* NOTE: Transactions will involve the GAS prices. */}
+                </p>
+                <div className="w-full flex items-center justify-end">
+                  {paymentTransactionMssg == "wait" && (
+                    <p className="mr-4 text-yellow-900 font-semibold">
+                      Transaction in progress...
+                    </p>
+                  )}
+                  {paymentTransactionMssg == "calculating" && (
+                    <p className="mr-4 text-yellow-900 font-semibold">
+                      Calculating your bill...
+                      <br />{" "}
+                    </p>
+                  )}
+                  {paymentTransactionMssg == "success" && (
+                    <p className="mr-4 text-green-500 font-semibold text-right">
+                      Transaction Successfull...
+                      <br />{" "}
+                      <span className="text-sm">
+                        (wait for a few second)
+                      </span>{" "}
+                      {/* &nbsp;&nbsp;&nbsp; */}
+                    </p>
+                  )}
+                  {paymentTransactionMssg == "error" && (
+                    <p className="mr-4 text-red-500 font-semibold text-right">
+                      Error had occured while transaction
+                      <br />{" "}
+                      <span className="text-sm">
+                        (Try again in a few second)
+                      </span>{" "}
+                      {/* &nbsp;&nbsp;&nbsp; */}
+                    </p>
+                  )}
+
+                  {(balance == 0 || energy * 0.2 > balance) && (
+                    <Button
+                      variant="outlined"
+                      className="mr-4"
+                      onClick={() => navigate("/pay")}
+                    >
+                      Deposit Amount
+                    </Button>
+                  )}
                   <Button
                     className={`bg-text ${
                       energyLoading ? "cursor-not-allowed" : "cursor-pointer"
                     }`}
-                    disabled={energyLoading}
+                    disabled={
+                      paymentTransactionMssg != "" ||
+                      energyLoading ||
+                      balance == 0
+                        ? true
+                        : false
+                    }
                     onClick={handlePayment}
                   >
                     Proceed Payment
@@ -248,6 +319,7 @@ function Payment() {
             </div>
           </div>
         </div>
+        <PaymentDialog open={open} setOpen={setOpen} />
       </div>
     </div>
   );

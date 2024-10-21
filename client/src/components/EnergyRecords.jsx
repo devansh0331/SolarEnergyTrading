@@ -16,6 +16,10 @@ const TABLE_HEAD = [
 export function EnergyRecords() {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [home11, setHome11] = useState();
+  const [home22, setHome22] = useState();
+  let home111 = 0;
+  let home222 = 0;
   // const URL =
   //   "https://script.google.com/macros/s/AKfycbyviZN9K4sXRkDdrPIXXERh2KHcLN51VH5CgZFL145UdAqWw1cqhW9_pM3_GLQqcBXRaA/exec";
   const URL =
@@ -28,8 +32,6 @@ export function EnergyRecords() {
       .then((resData) => {
         setLoading(false);
         setData(resData);
-
-        console.log(resData);
       })
       .catch((error) => console.log("Error:", error));
   };
@@ -95,85 +97,101 @@ export function EnergyRecords() {
                 index
               ) => {
                 const isLast = index === data.length - 1;
+                // useEffect(() => {
+                //   if (energyMeterID == "Home1_11") {
+                //     setHome11(power);
+                //     console.log(home11);
+                //   }
+                //   if (energyMeterID == "Home1_22") {
+                //     setHome22(power);
+                //     console.log(home22);
+                //   }
+                // }, []);
+
                 const classes = isLast
                   ? "p-4"
                   : "p-4 border-b border-blue-gray-50";
 
                 return (
-                  <tr key={energyMeterID}>
-                    <td className={classes}>
-                      <Typography
-                        variant="small"
-                        color="blue-gray"
-                        className="font-normal"
-                      >
-                        {timestamp}
-                      </Typography>
-                    </td>
-                    <td className={classes}>
-                      <Typography
-                        variant="small"
-                        color="blue-gray"
-                        className="font-normal"
-                      >
-                        {energyMeterID}
-                      </Typography>
-                    </td>
-                    <td className={classes}>
-                      <Typography
-                        variant="small"
-                        color="blue-gray"
-                        className="font-normal"
-                      >
-                        {voltage}
-                      </Typography>
-                    </td>
-                    <td className={classes}>
-                      <Typography
-                        variant="small"
-                        color="blue-gray"
-                        className="font-normal"
-                      >
-                        {current}
-                      </Typography>
-                    </td>
-                    <td className={classes}>
-                      <Typography
-                        variant="small"
-                        color="blue-gray"
-                        className="font-normal"
-                      >
-                        {power}
-                      </Typography>
-                    </td>
-                    <td className={classes}>
-                      <Typography
-                        variant="small"
-                        color="blue-gray"
-                        className="font-normal"
-                      >
-                        {energy}
-                      </Typography>
-                    </td>
-                    <td className={classes}>
-                      <Typography
-                        variant="small"
-                        color="blue-gray"
-                        className="font-normal"
-                      >
-                        {frequency}
-                      </Typography>
-                    </td>
-                    <td className={classes}>
-                      <Typography
-                        variant="small"
-                        color="blue-gray"
-                        className="font-normal"
-                      >
-                        {pf}
-                      </Typography>
-                    </td>
-                  </tr>
+                  (energyMeterID == "Home1_12" ||
+                    energyMeterID == "Home1_11") && (
+                    <>
+                      <tr key={timestamp}>
+                        <td className={classes}>
+                          <Typography
+                            variant="small"
+                            color="blue-gray"
+                            className="font-normal"
+                          >
+                            {timestamp}
+                          </Typography>
+                        </td>
+                        <td className={classes}>
+                          <Typography
+                            variant="small"
+                            color="blue-gray"
+                            className="font-normal"
+                          >
+                            {energyMeterID}
+                          </Typography>
+                        </td>
+                        <td className={classes}>
+                          <Typography
+                            variant="small"
+                            color="blue-gray"
+                            className="font-normal"
+                          >
+                            {voltage}
+                          </Typography>
+                        </td>
+                        <td className={classes}>
+                          <Typography
+                            variant="small"
+                            color="blue-gray"
+                            className="font-normal"
+                          >
+                            {current}
+                          </Typography>
+                        </td>
+                        <td className={classes}>
+                          <Typography
+                            variant="small"
+                            color="blue-gray"
+                            className="font-normal"
+                          >
+                            {power}
+                          </Typography>
+                        </td>
+                        <td className={classes}>
+                          <Typography
+                            variant="small"
+                            color="blue-gray"
+                            className="font-normal"
+                          >
+                            {energy}
+                          </Typography>
+                        </td>
+                        <td className={classes}>
+                          <Typography
+                            variant="small"
+                            color="blue-gray"
+                            className="font-normal"
+                          >
+                            {frequency}
+                          </Typography>
+                        </td>
+                        <td className={classes}>
+                          <Typography
+                            variant="small"
+                            color="blue-gray"
+                            className="font-normal"
+                          >
+                            {pf}
+                          </Typography>
+                        </td>
+                      </tr>
+                    </>
+                  )
                 );
               }
             )}

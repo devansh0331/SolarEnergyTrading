@@ -2,16 +2,18 @@ import React, { useContext, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { Context } from "../Context";
 import { Button } from "@material-tailwind/react";
+import logo from "../assets/logo.png";
 
 function Navbar() {
   const { account } = useContext(Context);
   return (
     <div className="p-4 px-8  bg-white mb-3  shadow-md shadow-gray-300 flex items-center justify-between">
-      <p className="text-center text-3xl font-semibold text-text">SETS</p>
+      {/* <p className="text-center text-3xl font-semibold text-text">SETS</p> */}
+      <img src={logo} alt="logo" className="h-20 cursor-pointer" />
       <div className="flex justify-end items-center text-base ">
-        <Link to="/about" className="mx-6 text-gray-900 hover:text-text">
+        {/* <Link to="/about" className="mx-6 text-gray-900 hover:text-text">
           <p>About</p>
-        </Link>
+        </Link> */}
         <Link to="/meters" className="mx-6 text-gray-900 hover:text-text">
           <p>Meters</p>
         </Link>
