@@ -61,12 +61,29 @@ function Payment() {
   const handlePayment = async () => {
     let transaction;
     const { ethereum } = window;
-    const provider = new ethers.providers.Web3Provider(ethereum); //read the Blockchain
-    const signer = provider.getSigner(); //write the blockchain
-    transaction = await contract.connect(signer).energyTrade(energy * 10);
-    await transaction.wait(1);
-    checkBalance();
-    alert("Payment Successfull");
+    console.log("Energy: " + energy);
+    console.log("Energy: " + energy);
+    const netAmount = (energy * 0.2).toFixed(6);
+    if (netAmount > balance) {
+      const provider = new ethers.providers.Web3Provider(ethereum); //read the Blockchain
+      const signer = provider.getSigner(); //write the blockchain
+      transaction = await contract
+        .connect(signer)
+        .energyTrade(ethers.utils.parseEther(balance.toString()), 1);
+      await transaction.wait(1);
+      checkBalance();
+      alert("Payment Successfull");
+    } else {
+      const provider = new ethers.providers.Web3Provider(ethereum); //read the Blockchain
+      const signer = provider.getSigner(); //write the blockchain
+
+      transaction = await contract
+        .connect(signer)
+        .energyTrade(ethers.utils.parseEther(netAmount.toString()), 0);
+      await transaction.wait(1);
+      checkBalance();
+      alert("Payment Successfull");
+    }
   };
 
   return (

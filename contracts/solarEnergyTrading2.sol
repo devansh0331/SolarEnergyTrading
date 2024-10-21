@@ -77,27 +77,25 @@ contract SolarEnergyTrading2 {
     //     }
     // }
 
-    function energyTrade(uint256 _meterValue) public payable {
-        if (consumer[msg.sender] != 0) {
-            uint256 balance = consumer[msg.sender];
-            uint256 amountTransfer = _meterValue * perUnitPrice;
-            if (amountTransfer < balance) {
-                (bool success, ) = payable(producer).call{
-                    value: amountTransfer
-                }("");
-                require(success, "");
-                consumer[msg.sender] = balance - amountTransfer;
-                tradeSuccess = true;
-            } else {
-                (bool success, ) = payable(producer).call{value: balance}("");
-                require(success, "");
-                consumer[msg.sender] = 0;
-                tradeSuccess = true;
-            }
-            // (bool success, ) = payable(producer).call{
-            //     value: address(this).balance
-            // }("");
+    function energyTrade(uint256 _amount, uint256 _digit) public payable {
+        require(consumer[msg.sender] != 0, "Not enough eth");
+
+        if (_digit == 0) {
+            (bool success, ) = payable(producer).call{value: _amount}("");
+            require(success, "");
+            consumer[msg.sender] -= _amount;
+            tradeSuccess = true;
         }
+        if (_digit == 1) {
+            (bool success, ) = payable(producer).call{value: _amount}("");
+            require(success, "");
+            consumer[msg.sender] = 0;
+            tradeSuccess = true;
+        }
+
+        // (bool success, ) = payable(producer).call{
+        //     value: address(this).balance
+        // }("");
     }
 
     function getBalance() public view returns (uint256) {
