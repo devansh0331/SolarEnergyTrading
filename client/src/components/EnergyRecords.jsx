@@ -22,8 +22,10 @@ export function EnergyRecords() {
   let home222 = 0;
   // const URL =
   //   "https://script.google.com/macros/s/AKfycbyviZN9K4sXRkDdrPIXXERh2KHcLN51VH5CgZFL145UdAqWw1cqhW9_pM3_GLQqcBXRaA/exec";
+  // const URL =
+  //   "https://script.google.com/macros/s/AKfycbxr3gjKO-DS3KoyTGuMiHx0atUzfioSbWE44y21pOy2oIzFZ998IUYq76f3tLQCE7M7/exec";
   const URL =
-    "https://script.google.com/macros/s/AKfycbxr3gjKO-DS3KoyTGuMiHx0atUzfioSbWE44y21pOy2oIzFZ998IUYq76f3tLQCE7M7/exec";
+    "https://script.google.com/macros/s/AKfycby1RvGRqATEuTqNbJsT_owH1PQx3jSJ0bNc7L0rkmB1J6bP6guO9p4VPJSB58ud6urE/exec?type=0";
 
   const fetchData = async () => {
     setLoading(true);
@@ -111,12 +113,21 @@ export function EnergyRecords() {
                 const classes = isLast
                   ? "p-4"
                   : "p-4 border-b border-blue-gray-50";
-
+                console.log("Home1_11 : " + home111);
+                console.log("Home1_12 : " + home222);
                 return (
                   (energyMeterID == "Home1_12" ||
                     energyMeterID == "Home1_11") && (
                     <>
-                      <tr key={timestamp}>
+                      {/* {(home111 = energyMeterID == "Home1_11" ? power : 0)}
+                      {(home222 = energyMeterID == "Home1_12" ? power : 0)} */}
+                      {/* {home111 != 0 && ( */}
+                      <tr
+                        key={timestamp}
+                        onChange={() =>
+                          setHome11(energyMeterID == "Home1_11" ? power : 0)
+                        }
+                      >
                         <td className={classes}>
                           <Typography
                             variant="small"
@@ -190,6 +201,7 @@ export function EnergyRecords() {
                           </Typography>
                         </td>
                       </tr>
+                      {/* )} */}
                     </>
                   )
                 );

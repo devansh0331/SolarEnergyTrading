@@ -58,7 +58,7 @@ function Meters() {
                 )}
               </p>
             </div>
-            <div className="p-4 bg-white rounded-xl shadow-md shadow-gray-300 hover:shadow-xl  cursor-pointer">
+            {/* <div className="p-4 bg-white rounded-xl shadow-md shadow-gray-300 hover:shadow-xl  cursor-pointer">
               <p className="text-base">Device 1</p>
               <p className="text-xs text-gray-600 mt-3">DEVICE ID</p>
               <p className="flex items-center mt-1">1899-12-30T06:56:50.000Z</p>
@@ -111,7 +111,7 @@ function Meters() {
                   </>
                 )}
               </p>
-            </div>
+            </div> */}
           </div>
         </div>
       </div>
