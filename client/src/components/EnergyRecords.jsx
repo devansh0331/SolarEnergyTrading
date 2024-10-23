@@ -1,6 +1,8 @@
 import { Card, Typography } from "@material-tailwind/react";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Grid } from "react-loader-spinner";
+import UseAutoScroll from "./UseAutoScroll";
+import AutoScroll from "react-auto-scroll";
 
 const TABLE_HEAD = [
   "Data/Time",
@@ -16,8 +18,12 @@ const TABLE_HEAD = [
 export function EnergyRecords() {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [cnt, setCnt] = useState(0);
   const [home11, setHome11] = useState();
   const [home22, setHome22] = useState();
+  const containerRef = useRef(null);
+
+  const [isScrolledToBottom, setIsScrolledToBottom] = useState(true);
   let home111 = 0;
   let home222 = 0;
   // const URL =
@@ -29,17 +35,23 @@ export function EnergyRecords() {
 
   const fetchData = async () => {
     setLoading(true);
+
     await fetch(URL)
       .then((response) => response.json())
       .then((resData) => {
         setLoading(false);
         setData(resData);
+        setIsScrolledToBottom(true);
       })
       .catch((error) => console.log("Error:", error));
   };
 
   useEffect(() => {
     fetchData();
+
+    let intervalId = setInterval(fetchData, 5000); // Fetch every 5 seconds
+
+    return () => clearInterval(intervalId);
   }, []);
 
   return (
@@ -51,7 +63,7 @@ export function EnergyRecords() {
         </p>
       </div>
       <Card className="h-full mx-auto shadow-md shadow-gray-300 overflow-scroll">
-        <table className="w-full min-w-max table-auto text-left">
+        <table className="w-full h-[400px] min-w-max table-auto text-left">
           <thead>
             <tr>
               {TABLE_HEAD.map((head) => (
@@ -70,8 +82,8 @@ export function EnergyRecords() {
               ))}
             </tr>
           </thead>
-          <tbody className="w-full relative">
-            {loading && (
+          <tbody className="w-full h-full pb-5 relative">
+            {loading && cnt <= 1 && (
               <tr className="absolute left-1/2 top-36">
                 <Grid
                   visible={true}
@@ -113,101 +125,101 @@ export function EnergyRecords() {
                 const classes = isLast
                   ? "p-4"
                   : "p-4 border-b border-blue-gray-50";
-                console.log("Home1_11 : " + home111);
-                console.log("Home1_12 : " + home222);
+
                 return (
-                  (energyMeterID == "Home1_12" ||
-                    energyMeterID == "Home1_11") && (
-                    <>
-                      {/* {(home111 = energyMeterID == "Home1_11" ? power : 0)}
+                  // (energyMeterID == "Home1_12" ||
+                  //   energyMeterID == "Home1_11") && (
+                  <>
+                    {/* {(home111 = energyMeterID == "Home1_11" ? power : 0)}
                       {(home222 = energyMeterID == "Home1_12" ? power : 0)} */}
-                      {/* {home111 != 0 && ( */}
-                      <tr
-                        key={timestamp}
-                        onChange={() =>
-                          setHome11(energyMeterID == "Home1_11" ? power : 0)
-                        }
-                      >
-                        <td className={classes}>
-                          <Typography
-                            variant="small"
-                            color="blue-gray"
-                            className="font-normal"
-                          >
-                            {timestamp}
-                          </Typography>
-                        </td>
-                        <td className={classes}>
-                          <Typography
-                            variant="small"
-                            color="blue-gray"
-                            className="font-normal"
-                          >
-                            {energyMeterID}
-                          </Typography>
-                        </td>
-                        <td className={classes}>
-                          <Typography
-                            variant="small"
-                            color="blue-gray"
-                            className="font-normal"
-                          >
-                            {voltage}
-                          </Typography>
-                        </td>
-                        <td className={classes}>
-                          <Typography
-                            variant="small"
-                            color="blue-gray"
-                            className="font-normal"
-                          >
-                            {current}
-                          </Typography>
-                        </td>
-                        <td className={classes}>
-                          <Typography
-                            variant="small"
-                            color="blue-gray"
-                            className="font-normal"
-                          >
-                            {power}
-                          </Typography>
-                        </td>
-                        <td className={classes}>
-                          <Typography
-                            variant="small"
-                            color="blue-gray"
-                            className="font-normal"
-                          >
-                            {energy}
-                          </Typography>
-                        </td>
-                        <td className={classes}>
-                          <Typography
-                            variant="small"
-                            color="blue-gray"
-                            className="font-normal"
-                          >
-                            {frequency}
-                          </Typography>
-                        </td>
-                        <td className={classes}>
-                          <Typography
-                            variant="small"
-                            color="blue-gray"
-                            className="font-normal"
-                          >
-                            {pf}
-                          </Typography>
-                        </td>
-                      </tr>
-                      {/* )} */}
-                    </>
-                  )
+                    {/* {home111 != 0 && ( */}
+                    <tr
+                      key={timestamp}
+                      onChange={() =>
+                        setHome11(energyMeterID == "Home1_11" ? power : 0)
+                      }
+                    >
+                      <td className={classes}>
+                        <Typography
+                          variant="small"
+                          color="blue-gray"
+                          className="font-normal"
+                        >
+                          {timestamp}
+                        </Typography>
+                      </td>
+                      <td className={classes}>
+                        <Typography
+                          variant="small"
+                          color="blue-gray"
+                          className="font-normal"
+                        >
+                          {energyMeterID}
+                        </Typography>
+                      </td>
+                      <td className={classes}>
+                        <Typography
+                          variant="small"
+                          color="blue-gray"
+                          className="font-normal"
+                        >
+                          {voltage}
+                        </Typography>
+                      </td>
+                      <td className={classes}>
+                        <Typography
+                          variant="small"
+                          color="blue-gray"
+                          className="font-normal"
+                        >
+                          {current}
+                        </Typography>
+                      </td>
+                      <td className={classes}>
+                        <Typography
+                          variant="small"
+                          color="blue-gray"
+                          className="font-normal"
+                        >
+                          {power}
+                        </Typography>
+                      </td>
+                      <td className={classes}>
+                        <Typography
+                          variant="small"
+                          color="blue-gray"
+                          className="font-normal"
+                        >
+                          {energy}
+                        </Typography>
+                      </td>
+                      <td className={classes}>
+                        <Typography
+                          variant="small"
+                          color="blue-gray"
+                          className="font-normal"
+                        >
+                          {frequency}
+                        </Typography>
+                      </td>
+                      <td className={classes}>
+                        <Typography
+                          variant="small"
+                          color="blue-gray"
+                          className="font-normal"
+                        >
+                          {pf}
+                        </Typography>
+                      </td>
+                    </tr>
+                    {/* )} */}
+                  </>
+                  // )
                 );
               }
             )}
           </tbody>
+          <AutoScroll bottom={isScrolledToBottom} />
         </table>
       </Card>
     </div>

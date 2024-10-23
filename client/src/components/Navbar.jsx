@@ -14,9 +14,9 @@ function Navbar() {
         {/* <Link to="/about" className="mx-6 text-gray-900 hover:text-text">
           <p>About</p>
         </Link> */}
-        <Link to="/meters" className="mx-6 text-gray-900 hover:text-text">
+        {/* <Link to="/meters" className="mx-6 text-gray-900 hover:text-text">
           <p>Meters</p>
-        </Link>
+        </Link> */}
         <Link to="/pay" className="mx-6 text-gray-900 hover:text-text">
           <p>Deposit</p>
         </Link>

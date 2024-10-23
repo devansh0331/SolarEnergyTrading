@@ -15,9 +15,6 @@ function Payment() {
   const [data, setData] = useState([]);
   const [energy, setenergy] = useState(0);
   const [balance, setBalance] = useState();
-  const [balanceLoading, setBalanceLoading] = useState(false);
-  const [energyLoading, setEnergyLoading] = useState(false);
-  const [netPayamentLoading, setNetPaymentLoading] = useState(false);
   const [paymentTransactionMssg, setPaymentTransactionMssg] = useState("");
   const [open, setOpen] = useState(false);
   const [energyC1Loading, setEnergyC1Loading] = useState(false);
@@ -38,17 +35,18 @@ function Payment() {
     await fetch(URL)
       .then((response) => response.json())
       .then((resData) => {
+        console.log(resData);
         for (let i = 0; i < resData.length; i++) {
           if (resData[i].energy == "") break;
           if (resData[i].supply > 0) {
-            setEnergyC1(resData[i].energy);
-          }
-          if (resData[i].supply < 0) {
             setEnergyC2(resData[i].energy);
           }
-          setEnergyC1Loading(false);
-          setEnergyC2Loading(false);
+          if (resData[i].supply < 0) {
+            setEnergyC1(resData[i].energy);
+          }
         }
+        setEnergyC1Loading(false);
+        setEnergyC2Loading(false);
       })
       .catch((error) => {
         setEnergyC1Loading(false);
@@ -71,7 +69,6 @@ function Payment() {
       transaction = await contract.connect(signer).getBalance();
 
       setBalance(ethers.utils.formatEther(transaction));
-      console.log("Balance, " + balance);
     } catch (error) {
       setBalance(0);
       console.log("Balance, " + balance);
@@ -204,7 +201,13 @@ function Payment() {
           {section != "" && (
             <>
               {dashboardDelay ? (
-                <div className="flex justify-center items-center h-[40vh] bg-gray-300 p-4 rounded-lg my-4">
+                <div className="flex justify-center items-center h-[40vh] bg-gray-300 p-4 rounded-lg my-4 relative">
+                  {/* <div
+                    onClick={() => setSection("")}
+                    className="absolute right-4 top-2 font-bold"
+                  >
+                    X
+                  </div> */}
                   <Grid
                     visible={true}
                     height="60"
@@ -216,7 +219,13 @@ function Payment() {
                   />
                 </div>
               ) : (
-                <div className="bg-gray-300 p-4 rounded-lg my-4">
+                <div className="bg-gray-300 p-4 rounded-lg my-4 relative">
+                  <div
+                    onClick={() => setSection("")}
+                    className="absolute right-4 top-2 font-bold cursor-pointer"
+                  >
+                    X
+                  </div>
                   <div className=" grid grid-cols-3 gap-4 pt-4 pb-8">
                     <div className="p-4 bg-white rounded-xl shadow-md  hover:shadow-lg duration-400 cursor-pointer shadow-gray-300">
                       <p className="text-base">Current Energy Consumption</p>
@@ -239,8 +248,8 @@ function Payment() {
                           <AiFillThunderbolt />
                         </span>
                         <span>
-                          {section == "Consumer1" && energyC1 > 0 && energyC1}{" "}
-                          {section == "Consumer2" && energyC2 > 0 && energyC2}{" "}
+                          {section == "Consumer1" && energyC1 >= 0 && energyC1}{" "}
+                          {section == "Consumer2" && energyC2 >= 0 && energyC2}{" "}
                           kWh
                         </span>
                         {/* </>
@@ -250,13 +259,13 @@ function Payment() {
                     <div className="p-4 bg-white rounded-xl shadow-md  hover:shadow-lg duration-400 cursor-pointer shadow-gray-300">
                       <p className="text-base">Conversion Rate</p>
                       <p className="text-xs text-gray-600 mt-3">
-                        RATE (ETH / UNIT)
+                        RATE (ETH / KWH)
                       </p>
                       <p className="flex items-center mt-1">
                         <span>
                           <FaEthereum />{" "}
                         </span>
-                        <span> 0.2 Eth / Unit</span>
+                        <span> 0.02 Eth / KWh</span>
                       </p>
                     </div>
                     <div className="p-4 bg-white rounded-xl shadow-md  hover:shadow-lg duration-400 cursor-pointer shadow-gray-300">
@@ -280,10 +289,10 @@ function Payment() {
                           <FaEthereum />
                         </span>
                         {section == "Consumer1" &&
-                          energyC1 > 0 &&
+                          energyC1 >= 0 &&
                           netPayableAmount}{" "}
                         {section == "Consumer2" &&
-                          energyC2 > 0 &&
+                          energyC2 >= 0 &&
                           netPayableAmount}{" "}
                         {/* </>
                     )} */}
@@ -347,7 +356,7 @@ function Payment() {
                           </p>
                         </div>
                         <div className="w-full flex justify-between">
-                          <p className=" ">Conversion Rate (Eth/unit)</p>
+                          <p className=" ">Conversion Rate (Eth/kWh)</p>
                           <p className="text-gray-600">0.02</p>
                         </div>
                         <div className="w-full flex justify-between">
