@@ -2,27 +2,6 @@
 pragma solidity ^0.8.0;
 
 contract SolarEnergyTrading2 {
-    // CODE TO BE DELETED BELOW
-    struct Readings {
-        uint voltage;
-        uint current;
-    }
-
-    Readings[] public readings;
-
-    function storeReadings(uint _voltage, uint _current) public {
-        readings.push(Readings(_voltage, _current));
-    }
-
-    function getReadings() public view returns (Readings[] memory) {
-        return readings;
-    }
-
-    // CODE TO BE DELETED ABOVE
-
-    // Producer address
-    address public producer;
-
     // Maximum Power Transfer -> Conversion Rate * Deposit Amount by Buyer
     uint256 public maxPowerTransfer;
 
@@ -38,8 +17,10 @@ contract SolarEnergyTrading2 {
     // Mapping consumer address to amount deposit
     mapping(address => uint256) public consumer;
 
-    constructor(address _producer, uint256 _perUnitPrice) {
-        producer = _producer;
+    // Mapping producer address to amount deposit
+    mapping(address => uint256) public producer;
+
+    constructor(uint256 _perUnitPrice) {
         perUnitPrice = _perUnitPrice; // --> per unit price (in eth)
     }
 
@@ -63,39 +44,33 @@ contract SolarEnergyTrading2 {
 
     receive() external payable {}
 
-    // function energyTrade(uint256 _meterValue) public payable {
-    //     // 500 - 600 == -100 < 0
-    //     // if (maxPowerTransfer - _meterValue < thresholdValue) {}
-    //     if (address(this).balance != 0) {
-    //         if (_meterValue >= maxPowerTransfer) {
-    //             (bool success, ) = payable(producer).call{
-    //                 value: address(this).balance
-    //             }("");
-    //             require(success, "");
-    //             tradeSuccess = true;
-    //         }
+    // function energyTrade(uint256 _amount, uint256 _digit) public payable {
+    //     require(consumer[msg.sender] != 0, "Not enough eth");
+
+    //     if (_digit == 0) {
+    //         (bool success, ) = payable(producer).call{value: _amount}("");
+    //         require(success, "");
+    //         consumer[msg.sender] -= _amount;
+    //         tradeSuccess = true;
+    //     }
+    //     if (_digit == 1) {
+    //         (bool success, ) = payable(producer).call{value: _amount}("");
+    //         require(success, "");
+    //         consumer[msg.sender] = 0;
+    //         tradeSuccess = true;
     //     }
     // }
 
-    function energyTrade(uint256 _amount, uint256 _digit) public payable {
-        require(consumer[msg.sender] != 0, "Not enough eth");
-
-        if (_digit == 0) {
-            (bool success, ) = payable(producer).call{value: _amount}("");
-            require(success, "");
-            consumer[msg.sender] -= _amount;
-            tradeSuccess = true;
-        }
-        if (_digit == 1) {
-            (bool success, ) = payable(producer).call{value: _amount}("");
-            require(success, "");
-            consumer[msg.sender] = 0;
-            tradeSuccess = true;
-        }
-
-        // (bool success, ) = payable(producer).call{
-        //     value: address(this).balance
-        // }("");
+    function trade(
+        address _producer,
+        address _consumer,
+        uint256 _amount
+    ) public payable {
+        require(consumer[_consumer] != 0, "Not enough eth");
+        (bool success, ) = payable(_producer).call{value: _amount}("");
+        require(success, "");
+        consumer[_consumer] -= _amount;
+        producer[_producer] += _amount;
     }
 
     function getBalance() public view returns (uint256) {

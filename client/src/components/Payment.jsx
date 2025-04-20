@@ -125,11 +125,11 @@ function Payment() {
             <div
               onClick={() => {
                 setDashboardDelay(true);
+                setNetPayableAmount((energyC1 * 0.02).toFixed(4));
+                setSection("Consumer1");
                 setTimeout(() => {
                   setDashboardDelay(false);
                 }, 3000);
-                setNetPayableAmount((energyC1 * 0.02).toFixed(4));
-                setSection("Consumer1");
               }}
               className={`p-4 rounded-xl shadow-md  hover:shadow-lg duration-400 cursor-pointer shadow-gray-300 ${
                 section == "Consumer1" ? "bg-gray-300" : "bg-white"

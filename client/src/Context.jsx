@@ -11,7 +11,8 @@ export function ContextProvider({ children }) {
   // const contractAddress = "0xE601738B1Fb61Ab35a61088C26565A3c1a5393D4";
   // const contractAddress = "0x3Cef76601E25F340103D2b005F9871E92269C931";
   // const contractAddress = "0x7fa9E4ca80580363c79A8b4174555FE3B8DebB87";
-  const contractAddress = "0x262C48e92B3f465746fdbDf0661706F538d3448C";
+  // const contractAddress = "0x262C48e92B3f465746fdbDf0661706F538d3448C"; // Demonstrated at IIT Kanpur
+  const contractAddress = "0x9a53838A8Bc9f5eD25c0e817b8f29Cc7C0514efD"; // Deployed at IIT BH
   const contractABI = solarABI.abi;
   const [contract, setContract] = useState();
 
